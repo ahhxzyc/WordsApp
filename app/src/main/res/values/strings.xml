@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">WordsApp</string>
+    <string name="title_insert">创建新的词目</string>
+    <string name="title_update">编辑词目</string>
+
+    <!-- Button texts -->
+    <string name="button_start_recording">开始录音</string>
+    <string name="button_restart_recording">重新录音</string>
+    <string name="button_stop_recording">停止录音</string>
+    <string name="button_start_playing">开始播放</string>
+    <string name="button_stop_playing">停止播放</string>
+
+    <!-- Snackbar messages -->
+    <string name="snackbar_recording_done">录音完成</string>
+    <string name="snackbar_recording_start">录音开始</string>
+    <string name="snackbar_playing_start">播放开始</string>
+    <string name="snackbar_playing_done">播放完成</string>
+    <string name="snackbar_insert_done">创建成功</string>
+    <string name="snackbar_update_done">更新成功</string>
+</resources>
