@@ -17,4 +17,7 @@
     <string name="snackbar_playing_done">播放完成</string>
     <string name="snackbar_insert_done">创建成功</string>
     <string name="snackbar_update_done">更新成功</string>
+
+    <!-- Swipe button -->
+    <string name="swipe_delete">删除</string>
 </resources>
