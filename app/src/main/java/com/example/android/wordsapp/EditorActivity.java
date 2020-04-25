@@ -94,22 +94,14 @@ public abstract class EditorActivity extends AppCompatActivity {
         mRecorder.start();
         isRecording = true;
         m_btRecord.setText(R.string.button_stop_recording);
-        Snackbar.make(
-                findViewById(R.id.editor_parent_view),
-                R.string.snackbar_recording_start,
-                Snackbar.LENGTH_LONG
-        ).show();
+        makeSnackbarMessage(R.string.snackbar_recording_start);
     }
 
     private void stopRecording() {
         mRecorder.stop();
         isRecording = false;
         m_btRecord.setText(R.string.button_restart_recording);
-        Snackbar.make(
-                findViewById(R.id.editor_parent_view),
-                R.string.snackbar_recording_done,
-                Snackbar.LENGTH_LONG
-        ).show();
+        makeSnackbarMessage(R.string.snackbar_recording_done);
     }
 
     // ******************************** Player part ***************************************
@@ -126,20 +118,12 @@ public abstract class EditorActivity extends AppCompatActivity {
         }
         mPlayer.start();
         m_btPlay.setText(R.string.button_stop_playing);
-        Snackbar.make(
-                findViewById(R.id.editor_parent_view),
-                R.string.snackbar_playing_start,
-                Snackbar.LENGTH_LONG
-        ).show();
+        makeSnackbarMessage(R.string.snackbar_playing_start);
     }
 
     private void stopPlaying() {
         mPlayer.reset();
         m_btPlay.setText(R.string.button_start_playing);
-        Snackbar.make(
-                findViewById(R.id.editor_parent_view),
-                R.string.snackbar_playing_done,
-                Snackbar.LENGTH_LONG
-        ).show();
+        makeSnackbarMessage(R.string.snackbar_playing_done);
     }
 }
