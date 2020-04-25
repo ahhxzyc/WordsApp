@@ -38,6 +38,9 @@ public class SwipeMenuListView extends ListView {
     private Interpolator mCloseInterpolator;
     private Interpolator mOpenInterpolator;
 
+    // last time touch position
+    private int mOldTouchPosition = -1;
+
     public SwipeMenuListView(Context context) {
         super(context);
         init();
@@ -159,19 +162,23 @@ public class SwipeMenuListView extends ListView {
         int action = ev.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                int oldPos = mTouchPosition;
+                if (mOldTouchPosition == -1) {// first time pressed
+                    mOldTouchPosition = mTouchPosition;
+                }
                 mDownX = ev.getX();
                 mDownY = ev.getY();
                 mTouchState = TOUCH_STATE_NONE;
 
                 mTouchPosition = pointToPosition((int) ev.getX(), (int) ev.getY());
 
-                if (mTouchPosition == oldPos && mTouchView != null
+                if (mTouchPosition == mOldTouchPosition && mTouchView != null
                         && mTouchView.isOpen()) {
                     mTouchState = TOUCH_STATE_X;
                     mTouchView.onSwipe(ev);
                     return true;
                 }
+
+                mOldTouchPosition = mTouchPosition;
 
                 View view = getChildAt(mTouchPosition - getFirstVisiblePosition());
 
@@ -184,7 +191,7 @@ public class SwipeMenuListView extends ListView {
                     cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
                     onTouchEvent(cancelEvent);
                     if (mOnMenuStateChangeListener != null) {
-                        mOnMenuStateChangeListener.onMenuClose(oldPos);
+                        mOnMenuStateChangeListener.onMenuClose(mOldTouchPosition);
                     }
                     return true;
                 }

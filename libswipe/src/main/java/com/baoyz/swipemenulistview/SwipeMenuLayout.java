@@ -189,7 +189,9 @@ public class SwipeMenuLayout extends FrameLayout {
 			if ((isFling || Math.abs(mDownX - event.getX()) > (mMenuView.getWidth() / 2)) &&
 					Math.signum(mDownX - event.getX()) == mSwipeDirection) {
 				// open
-				smoothOpenMenu();
+				if (state != STATE_OPEN) {
+					smoothOpenMenu();
+				}
 			} else {
 				// close
 				smoothCloseMenu();
