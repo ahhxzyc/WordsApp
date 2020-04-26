@@ -68,8 +68,11 @@ public abstract class EditorActivity extends AppCompatActivity {
         m_btPlay = findViewById(R.id.button_play);
     }
 
-    protected String buildFilePath(long id) {
-        return getFilesDir() + "/audio_" + id + ".3gp";
+    public String buildFilePath(String tableName, long id) {
+        return  getFilesDir() + "/audio_" + tableName + "_" + id + ".3gp";
+    }
+    public String getTempFilePath() {
+        return getFilesDir() + "/temp_audio.3gp";
     }
 
     protected void makeSnackbarMessage(int msgId) {

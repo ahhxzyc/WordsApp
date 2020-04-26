@@ -1,6 +1,7 @@
 package com.example.android.wordsapp.data;
 
 import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.widget.Button;
@@ -19,9 +20,9 @@ public class WordsItemLoaderHelper extends WordsLoaderHelper {
     private EditText etWord;
     private EditText etDescription;
 
-    public WordsItemLoaderHelper(AppCompatActivity activity, Uri uri) {
+    public WordsItemLoaderHelper(Context context, Uri uri) {
         super(
-                activity,
+                context,
                 uri,
                 null,
                 WordsContract.WordsEntry._ID + "=?",
@@ -29,8 +30,8 @@ public class WordsItemLoaderHelper extends WordsLoaderHelper {
                 null
         );
         // Grab the view objects
-        etWord = getActivity().findViewById(R.id.et_word);
-        etDescription = getActivity().findViewById(R.id.et_description);
+        etWord = ((AppCompatActivity)getContext()).findViewById(R.id.et_word);
+        etDescription = ((AppCompatActivity)getContext()).findViewById(R.id.et_description);
     }
 
     /**

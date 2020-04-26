@@ -16,6 +16,10 @@ import com.example.android.wordsapp.data.WordsContract.WordsEntry;
 import java.io.File;
 
 public class EmptyEditorActivity extends EditorActivity {
+
+    private Uri mUri;
+    private String mTableName;
+
     /**
      * Grab view objects and setup listeners on creation of this activity
      */
@@ -26,8 +30,11 @@ public class EmptyEditorActivity extends EditorActivity {
         setTitle(R.string.title_insert);
         grabViewObjects();
 
+        mUri = getIntent().getData();
+        mTableName = mUri.getPath();
+
         // decide the file path
-        mAudioFilePath = buildFilePath(TEMP_AUDIO_ID);
+        mAudioFilePath = buildFilePath(mTableName, TEMP_AUDIO_ID);
 
         // Initialize the button texts
         m_btRecord.setText(R.string.button_start_recording);
@@ -58,7 +65,7 @@ public class EmptyEditorActivity extends EditorActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                insertWord(WordsEntry.CONTENT_URI);
+                insertWord();
                 makeSnackbarMessage(R.string.snackbar_insert_done);
                 finish();
                 break;
@@ -66,21 +73,25 @@ public class EmptyEditorActivity extends EditorActivity {
         return true;
     }
 
-    private void insertWord(Uri uri) {
-        // Insert with a dummy column
-        Uri retUri = getContentResolver().insert(WordsEntry.CONTENT_URI, buildValues());
-        long id = ContentUris.parseId(retUri);
-        // Then update it with the correct file path
-        ContentValues updateValues = new ContentValues();
-        updateValues.put(WordsEntry.COLUMN_AUDIO, buildFilePath(id));
-        getContentResolver().update(
-                retUri,
-                updateValues,
-                WordsEntry._ID + "=?",
-                new String[]{String.valueOf(id)}
-        );
-        // Correct the actual file name
-        File file = new File(buildFilePath(TEMP_AUDIO_ID));
-        file.renameTo(new File(buildFilePath(id)));
+    private void insertWord() {
+
+        File file = new File(getTempFilePath());
+
+        if (file.exists()) {
+            // Insert with a dummy column to get id
+            Uri retUri = getContentResolver().insert(mUri, buildValues());
+            long id = ContentUris.parseId(retUri);
+            // Rename the temp file
+            file.renameTo(new File(buildFilePath(mTableName, id)));
+            // Update the table entry
+            ContentValues updateValues = new ContentValues();
+            updateValues.put(WordsEntry.COLUMN_AUDIO, buildFilePath(mTableName, id));
+            getContentResolver().update(
+                    retUri,
+                    updateValues,
+                    WordsEntry._ID + "=?",
+                    new String[]{String.valueOf(id)}
+            );
+        }
     }
 }

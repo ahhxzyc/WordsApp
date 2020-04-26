@@ -12,9 +12,9 @@ public class WordsListLoaderHelper extends WordsLoaderHelper {
     // Need to know to adapter in order to update its content
     private CursorAdapter mAdapter;
 
-    public WordsListLoaderHelper(AppCompatActivity activity, Uri uri, String[] projection, String selection,
+    public WordsListLoaderHelper(Context context, Uri uri, String[] projection, String selection,
                                  String[] selectionArgs, String sortOrder, CursorAdapter adapter) {
-        super(activity, uri, projection, selection, selectionArgs, sortOrder);
+        super(context, uri, projection, selection, selectionArgs, sortOrder);
         mAdapter = adapter;
     }
 

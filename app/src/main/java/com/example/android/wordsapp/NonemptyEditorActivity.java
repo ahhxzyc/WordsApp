@@ -28,7 +28,7 @@ public class NonemptyEditorActivity extends EditorActivity {
         // decide the file path
         mUri = getIntent().getData();
         mId = ContentUris.parseId(mUri);
-        mAudioFilePath = buildFilePath(mId);
+        mAudioFilePath = buildFilePath(mUri.getPath(), mId);
 
         // Deal with the Views
         grabViewObjects();
@@ -47,7 +47,7 @@ public class NonemptyEditorActivity extends EditorActivity {
         ContentValues values = new ContentValues();
         values.put(WordsEntry.COLUMN_WORD, m_etWord.getText().toString());
         values.put(WordsEntry.COLUMN_DESCRIPTION, m_etDescription.getText().toString());
-        values.put(WordsEntry.COLUMN_AUDIO, buildFilePath(mId));
+        values.put(WordsEntry.COLUMN_AUDIO, buildFilePath(mUri.getPath(), mId));
         return values;
     }
 

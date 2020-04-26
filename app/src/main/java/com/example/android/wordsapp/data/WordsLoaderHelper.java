@@ -15,8 +15,7 @@ import androidx.loader.content.Loader;
 import com.example.android.wordsapp.MainActivity;
 
 /**
- * Wraps up the details involved in loader using, and provides API for responding the loader callbacks.
- * (Using strategy pattern)
+ * Wraps up the details involved in loader using, and provides API for responding to the loader callbacks.
  */
 public abstract class WordsLoaderHelper {
 
@@ -24,16 +23,16 @@ public abstract class WordsLoaderHelper {
     private static int sLoaderId = 0;
 
     // The information needed for query
-    private AppCompatActivity mActivity;
+    private Context mContext;
     private Uri mUri;
     private String[] mProjection;
     private String mSelection;
     private String[] mSelectionArgs;
     private String mSortOrder;
 
-    public WordsLoaderHelper(AppCompatActivity activity, Uri uri, String[] projection, String selection,
+    public WordsLoaderHelper(Context context, Uri uri, String[] projection, String selection,
                                 String[] selectionArgs, String sortOrder) {
-        mActivity = activity;
+        mContext = context;
         mUri = uri;
         mProjection = projection;
         mSelection = selection;
@@ -59,7 +58,7 @@ public abstract class WordsLoaderHelper {
                     @Override
                     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
                         return new CursorLoader(
-                                mActivity,
+                                mContext,
                                 mUri,
                                 mProjection,
                                 mSelection,
@@ -78,10 +77,10 @@ public abstract class WordsLoaderHelper {
                         WordsLoaderHelper.this.onLoaderReset();
                     }
                 };
-        LoaderManager.getInstance(mActivity).initLoader( ++ sLoaderId, new Bundle(), loaderCallbacks);
+        LoaderManager.getInstance((AppCompatActivity)mContext).initLoader( ++ sLoaderId, new Bundle(), loaderCallbacks);
     }
 
-    public AppCompatActivity getActivity() {
-        return mActivity;
+    public Context getContext() {
+        return mContext;
     }
 }
