@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.loader.app.LoaderManager;
 
 import android.content.Intent;
@@ -52,6 +54,19 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavView = findViewById(R.id.nav_view);
+        mNavView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        ListFragment fragment = new ListFragment();
+                        fragment.setTableName(item.getTitle().toString());
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, fragment).commit();
+                        mDrawerLayout.closeDrawer(mNavView);
+                        return true;
+                    }
+                }
+        );
 
 //        // Setup the list view display
 //        final SwipeMenuListView lvMain = findViewById(R.id.main_list);
