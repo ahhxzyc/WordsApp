@@ -27,10 +27,7 @@ public class WordsCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         String word = cursor.getString(cursor.getColumnIndex(WordsEntry.COLUMN_WORD));
-        String description = cursor.getString(cursor.getColumnIndex(WordsEntry.COLUMN_DESCRIPTION));
         TextView tvWord = view.findViewById(R.id.item_word);
-        TextView tvDescription = view.findViewById(R.id.item_description);
         tvWord.setText(word);
-        tvDescription.setText(description);
     }
 }

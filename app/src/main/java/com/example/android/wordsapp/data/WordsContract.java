@@ -9,27 +9,28 @@ public class WordsContract {
     // Something that uniquely identifies the ContentProvider
     public static final String CONTENT_AUTHORITY = "com.example.android.wordsapp";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    public static final String PATH_WORDS = "words";
 
     /**
      * The class for the "words" table
      */
     public static class WordsEntry implements BaseColumns {
+        // The table name
+        public static final String TABLE_NAME = "words";
         // The columns of this table
         public static final String COLUMN_WORD = "word";
-        public static final String COLUMN_DESCRIPTION = "description";
+        public static final String COLUMN_WORDLIST = "wordlist";
         public static final String COLUMN_AUDIO = "audio";
 
-        public static Uri buildWordsUri(String tableName, long id) {
-            return ContentUris.withAppendedId(buildContentUri(tableName), id);
-        }
-        public static Uri buildContentUri(String tableName) {
-            return Uri.withAppendedPath(BASE_CONTENT_URI, tableName);
-        }
-        public static String buildContentType(String tableName) {
-            return "vnd.android.cursor.dir/" + buildContentUri(tableName) + "/" + tableName;
-        }
-        public static String buildContentItemType(String tableName) {
-            return "vnd.android.cursor.item/" + buildContentUri(tableName) + "/" + tableName;
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_WORDS);
+
+        public static final String CONTENT_TYPE =
+                "vnd.android.cursor.dir/" + CONTENT_URI + "/" + TABLE_NAME;
+        public static final String CONTENT_ITEM_TYPE =
+                "vnd.android.cursor.item/" + CONTENT_URI + "/" + TABLE_NAME;
+
+        public static Uri buildWordsUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
 }

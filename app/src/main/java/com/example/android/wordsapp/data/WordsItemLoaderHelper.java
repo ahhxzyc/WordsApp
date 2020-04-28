@@ -19,6 +19,7 @@ public class WordsItemLoaderHelper extends WordsLoaderHelper {
     // The view objects
     private EditText etWord;
     private EditText etDescription;
+    // TODO: Implement this LoaderHelper after the DialogFragment
 
     public WordsItemLoaderHelper(Context context, Uri uri) {
         super(
@@ -41,9 +42,9 @@ public class WordsItemLoaderHelper extends WordsLoaderHelper {
     public void onLoadFinished(Cursor cursor) {
         cursor.moveToFirst();
         String word = cursor.getString(cursor.getColumnIndex(WordsEntry.COLUMN_WORD));
-        String description = cursor.getString(cursor.getColumnIndex(WordsEntry.COLUMN_DESCRIPTION));
+//        String description = cursor.getString(cursor.getColumnIndex(WordsEntry.COLUMN_DESCRIPTION));
         etWord.setText(word);
-        etDescription.setText(description);
+//        etDescription.setText(description);
     }
 
     @Override

@@ -17,44 +17,32 @@ public class WordsDbHelper extends SQLiteOpenHelper {
     private static String DB_FILENAME = "WordsDb.db";
     private static int DB_VERSION = 1;
 
-    private String mTableName;
-    private SQLiteDatabase mDb;
-
     // A private constructor to prevent unnecessary duplicates
-    private WordsDbHelper(Context context, String tableName) {
+    private WordsDbHelper(Context context) {
         super(context, DB_FILENAME, null, DB_VERSION);
-        mTableName = tableName;
-        mDb = getWritableDatabase();
     }
 
     // A public getter method for the client to use
-    public static WordsDbHelper getInstance(Context context, String tableName) {
+    public static WordsDbHelper getInstance(Context context) {
         if (mHelper == null) {
-            mHelper = new WordsDbHelper(context, tableName);
+            mHelper = new WordsDbHelper(context);
         }
-        mHelper.mTableName = tableName;
         return mHelper;
     }
 
-    public void createTable() {
-        mDb.execSQL(
-                "CREATE TABLE " + mTableName + "(" +
+    private void createTable(SQLiteDatabase db) {
+        db.execSQL(
+                "CREATE TABLE " + WordsEntry.TABLE_NAME + "(" +
                         WordsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         WordsEntry.COLUMN_WORD + " TEXT," +
-                        WordsEntry.COLUMN_DESCRIPTION + " TEXT," +
+                        WordsEntry.COLUMN_WORDLIST+ " TEXT," +
                         WordsEntry.COLUMN_AUDIO + " TEXT)"
-        );
-    }
-
-    public void deleteTable(String tableName) {
-        mDb.execSQL(
-                "DROP TABLE IF EXISTS " + tableName
         );
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // do nothing
+        createTable(db);
     }
 
     @Override

@@ -6,32 +6,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.example.android.wordsapp.data.WordsContract;
 import com.example.android.wordsapp.data.WordsContract.WordsEntry;
 import com.example.android.wordsapp.data.WordsCursorAdapter;
-import com.example.android.wordsapp.data.WordsDbHelper;
 import com.example.android.wordsapp.data.WordsListLoaderHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EditWordFragment.OnEditFinishedListener {
 
     private Toolbar mToolbar;
 
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO: Call a DialogFragment to handle word insertion
+                EditWordFragment frag = new EditWordFragment();
+                frag.show(getSupportFragmentManager(), "Editor");
             }
         });
     }
@@ -115,16 +118,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                setTitle((String)parent.getItemAtPosition(position));
+                mCurrentWordList = (String) parent.getItemAtPosition(position);
+                setTitle(mCurrentWordList);
 
                 mAdapter = new WordsCursorAdapter(MainActivity.this, null);
                 mListView.setAdapter(mAdapter);
                 new WordsListLoaderHelper(
                         MainActivity.this,
-                        WordsEntry.buildContentUri(getTitle().toString()),
+                        WordsEntry.CONTENT_URI,
+                        null,
+                        WordsEntry.COLUMN_WORDLIST + "=?",
+                        new String[] {mCurrentWordList},
                         null,
                         mAdapter
                 ).initLoader();
+                mListView.setEmptyView(findViewById(R.id.empty_view));
 
                 mDrawerLayout.closeDrawer(mDrawerView);
                 mFab.setVisibility(View.VISIBLE);
@@ -149,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
                                     Snackbar.LENGTH_LONG
                             ).show();
                         } else {
-                            WordsDbHelper.getInstance(MainActivity.this, input).createTable();
                             mDrawerList.add(input);
                             mDrawerAdapter.notifyDataSetChanged();
                         }
@@ -169,5 +176,29 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> set = prefs.getStringSet("list", new HashSet<String>());
         mDrawerList = new ArrayList<String>(set);
+    }
+
+    // Called when "Confirm" in the editor-fragment is pressed
+    @Override
+    public void onEditFinished(String word) {
+
+        String tempFilePath = getFilesDir() + "/temp_audio.3gp";
+        ContentValues values = new ContentValues();
+        values.put(WordsEntry.COLUMN_WORD, word);
+        values.put(WordsEntry.COLUMN_WORDLIST, mCurrentWordList);
+        values.put(WordsEntry.COLUMN_AUDIO, tempFilePath);
+
+        Uri insertedUri = getContentResolver().insert(WordsEntry.CONTENT_URI, values);
+        long id = ContentUris.parseId(insertedUri);
+
+        String filePath = getFilesDir() + "/audio_" + id + ".3gp";
+        values.clear();
+        values.put(WordsEntry.COLUMN_AUDIO, filePath);
+        getContentResolver().update(
+                insertedUri,
+                values,
+                null,
+                null
+        );
     }
 }
