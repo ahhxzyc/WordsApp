@@ -32,12 +32,13 @@ public class ListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_wordlist, container, false);
-        TextView tv = view.findViewById(R.id.list_fragment_empty_text);
-        tv.setText(mTableName);
-        setupListView(view);
-        setupFab(view);
-        return view;
+//        View view = inflater.inflate(R.layout.fragment_wordlist, container, false);
+//        TextView tv = view.findViewById(R.id.list_fragment_empty_text);
+//        tv.setText(mTableName);
+//        setupListView(view);
+//        setupFab(view);
+//        return view;
+        return null;
     }
 
     private void setupFab(View view) {

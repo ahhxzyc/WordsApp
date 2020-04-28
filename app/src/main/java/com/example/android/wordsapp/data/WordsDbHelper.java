@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.android.wordsapp.data.WordsContract.WordsEntry;
 
+import java.io.File;
+
 public class WordsDbHelper extends SQLiteOpenHelper {
 
     // A static instance of this class for the public getter

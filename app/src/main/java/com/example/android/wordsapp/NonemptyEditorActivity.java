@@ -18,6 +18,7 @@ public class NonemptyEditorActivity extends EditorActivity {
 
     private Uri mUri;
     private long mId;
+    private String mTableName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,7 +29,9 @@ public class NonemptyEditorActivity extends EditorActivity {
         // decide the file path
         mUri = getIntent().getData();
         mId = ContentUris.parseId(mUri);
-        mAudioFilePath = buildFilePath(mUri.getPath(), mId);
+        mTableName = mUri.getPath().substring(1);
+
+        mAudioFilePath = buildFilePath(mTableName, mId);
 
         // Deal with the Views
         grabViewObjects();
@@ -47,7 +50,7 @@ public class NonemptyEditorActivity extends EditorActivity {
         ContentValues values = new ContentValues();
         values.put(WordsEntry.COLUMN_WORD, m_etWord.getText().toString());
         values.put(WordsEntry.COLUMN_DESCRIPTION, m_etDescription.getText().toString());
-        values.put(WordsEntry.COLUMN_AUDIO, buildFilePath(mUri.getPath(), mId));
+        values.put(WordsEntry.COLUMN_AUDIO, buildFilePath(mTableName, mId));
         return values;
     }
 

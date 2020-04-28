@@ -31,7 +31,7 @@ public class EmptyEditorActivity extends EditorActivity {
         grabViewObjects();
 
         mUri = getIntent().getData();
-        mTableName = mUri.getPath();
+        mTableName = mUri.getPath().substring(1);
 
         // decide the file path
         mAudioFilePath = buildFilePath(mTableName, TEMP_AUDIO_ID);
