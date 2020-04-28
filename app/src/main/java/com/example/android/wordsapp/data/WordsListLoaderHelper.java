@@ -12,9 +12,8 @@ public class WordsListLoaderHelper extends WordsLoaderHelper {
     // Need to know to adapter in order to update its content
     private CursorAdapter mAdapter;
 
-    public WordsListLoaderHelper(Context context, Uri uri, String[] projection, String selection,
-                                 String[] selectionArgs, String sortOrder, CursorAdapter adapter) {
-        super(context, uri, projection, selection, selectionArgs, sortOrder);
+    public WordsListLoaderHelper(Context context, Uri uri,  String sortOrder, CursorAdapter adapter) {
+        super(context, uri, null, null, null, sortOrder);
         mAdapter = adapter;
     }
 

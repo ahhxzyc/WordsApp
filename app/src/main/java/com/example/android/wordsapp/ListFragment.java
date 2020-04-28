@@ -97,16 +97,16 @@ public class ListFragment extends Fragment {
         });
 
         // Setup the Loader on its mission
-        WordsLoaderHelper loaderHelper = new WordsListLoaderHelper(
-                getContext(),
-                WordsEntry.buildContentUri(mTableName),
-                null,
-                null,
-                null,
-                null,
-                mAdapter
-        );
-        loaderHelper.initLoader();
+//        WordsLoaderHelper loaderHelper = new WordsListLoaderHelper(
+//                getContext(),
+//                WordsEntry.buildContentUri(mTableName),
+//                null,
+//                null,
+//                null,
+//                null,
+//                mAdapter
+//        );
+//        loaderHelper.initLoader();
 
         // Setup the list view click event
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {

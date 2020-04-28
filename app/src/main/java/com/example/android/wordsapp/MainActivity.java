@@ -1,67 +1,50 @@
 package com.example.android.wordsapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.loader.app.LoaderManager;
 
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.InputType;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.android.wordsapp.data.WordsContract;
 import com.example.android.wordsapp.data.WordsContract.WordsEntry;
 import com.example.android.wordsapp.data.WordsCursorAdapter;
 import com.example.android.wordsapp.data.WordsDbHelper;
 import com.example.android.wordsapp.data.WordsListLoaderHelper;
-import com.example.android.wordsapp.data.WordsLoaderHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
+
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private ListView mDrawerListView;
     private View mDrawerView;
-    private ArrayList<String> mList = new ArrayList<>();
-    private ArrayAdapter<String> mAdapter;
+    private ArrayList<String> mDrawerList = new ArrayList<>();
+    private ArrayAdapter<String> mDrawerAdapter;
+
+    private FloatingActionButton mFab;
+    private WordsCursorAdapter mAdapter;
+    private ListView mListView;
+    private String mCurrentWordList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,27 +56,23 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Set drawer list to display the array list
+        // Find the views
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        loadList();
-        mDrawerList = findViewById(R.id.drawer_list);
+        mDrawerListView = findViewById(R.id.drawer_list);
         mDrawerView = findViewById(R.id.drawer_view);
-        mAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_list_item_1, mList);
-        mDrawerList.setAdapter(mAdapter);
+        mFab = findViewById(R.id.fab);
+        mListView = findViewById(R.id.main_list);
 
-        Button btAddWordList = findViewById(R.id.add_word_list);
-        btAddWordList.setOnClickListener(new View.OnClickListener() {
+        setupDrawer();
+        // TODO: setup the main list with its swipe functionality and etc.
+
+        // Set the floating button
+        // The button is not available until a table is selected
+        mFab.setVisibility(View.GONE);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addWordList();
-            }
-        });
-
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO: Set the ListView to display a specific table
+                // TODO: Call a DialogFragment to handle word insertion
             }
         });
     }
@@ -114,6 +93,45 @@ public class MainActivity extends AppCompatActivity {
         saveList();
     }
 
+    private void setupDrawer() {
+        // Set drawer list to display the array list
+        loadList();
+        mDrawerAdapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_list_item_1, mDrawerList);
+        mDrawerListView.setAdapter(mDrawerAdapter);
+        //TODO: Implement single-choice mode for mDrawerListView
+
+        // Add-word-list button
+        Button btAddWordList = findViewById(R.id.add_word_list);
+        btAddWordList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addWordList();
+            }
+        });
+
+        // Setup the navigational function of the drawer
+        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                setTitle((String)parent.getItemAtPosition(position));
+
+                mAdapter = new WordsCursorAdapter(MainActivity.this, null);
+                mListView.setAdapter(mAdapter);
+                new WordsListLoaderHelper(
+                        MainActivity.this,
+                        WordsEntry.buildContentUri(getTitle().toString()),
+                        null,
+                        mAdapter
+                ).initLoader();
+
+                mDrawerLayout.closeDrawer(mDrawerView);
+                mFab.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
     private void addWordList() {
         final EditText et = new EditText(MainActivity.this);
         et.setHint("名称");
@@ -132,8 +150,8 @@ public class MainActivity extends AppCompatActivity {
                             ).show();
                         } else {
                             WordsDbHelper.getInstance(MainActivity.this, input).createTable();
-                            mList.add(input);
-                            mAdapter.notifyDataSetChanged();
+                            mDrawerList.add(input);
+                            mDrawerAdapter.notifyDataSetChanged();
                         }
                     }
                 })
@@ -143,13 +161,13 @@ public class MainActivity extends AppCompatActivity {
     private void saveList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
-        Set<String> set = new HashSet<>(mList);
+        Set<String> set = new HashSet<>(mDrawerList);
         editor.putStringSet("list", set).apply();
     }
 
     private void loadList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> set = prefs.getStringSet("list", new HashSet<String>());
-        mList = new ArrayList<String>(set);
+        mDrawerList = new ArrayList<String>(set);
     }
 }
