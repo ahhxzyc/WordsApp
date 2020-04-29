@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -22,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -189,6 +191,13 @@ public class MainActivity extends AppCompatActivity implements
         SwipeMenuCreator creator = new SwipeMenuCreator() {
             @Override
             public void create(SwipeMenu menu) {
+
+                SwipeMenuItem itemLookUp = new SwipeMenuItem(MainActivity.this);
+                itemLookUp.setBackground(R.color.colorAccent);
+                itemLookUp.setWidth(dp2px(80));
+                itemLookUp.setIcon(R.drawable.ic_lookup);
+                menu.addMenuItem(itemLookUp);
+
                 SwipeMenuItem itemDel = new SwipeMenuItem(MainActivity.this);
                 itemDel.setIcon(R.drawable.ic_cross);
                 itemDel.setBackground(R.color.red);
@@ -205,14 +214,26 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 switch (index) {
-                    case 0:
+                    // Look up
+                    case 0: {
+                        View v = mListView.getChildAt(position - mListView.getFirstVisiblePosition());
+                        String word = ((TextView)v.findViewById(R.id.item_word)).getText().toString();
+                        String url = "https://www.ldoceonline.com/dictionary/" + word;
+                        Uri uri = Uri.parse(url);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                        break;
+                    }
+                    // Delete
+                    case 1: {
                         Uri uri = WordsEntry.buildWordsUri(mListView.getItemIdAtPosition(position));
                         getContentResolver().delete(
                                 uri,
                                 WordsEntry._ID + "=?",
-                                new String[] {String.valueOf(ContentUris.parseId(uri))}
+                                new String[]{String.valueOf(ContentUris.parseId(uri))}
                         );
                         break;
+                    }
                 }
                 return false;
             }
