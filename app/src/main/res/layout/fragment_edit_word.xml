@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
     <EditText
         android:id="@+id/et_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="输入单词"
+        android:layout_alignParentTop="true"
         android:gravity="center"
-        android:layout_alignParentTop="true"/>
+        android:hint="输入单词" />
 
-    <Button
-        android:id="@+id/button_confirm"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="确定"
         android:layout_below="@id/et_word"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/button_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:text="录音" />
+
+        <Button
+            android:id="@+id/button_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_marginLeft="60dp"
+            android:layout_toRightOf="@id/button_record"
+            android:text="确定" />
+    </RelativeLayout>
+
 
 </RelativeLayout>

@@ -18,7 +18,6 @@ public class WordsItemLoaderHelper extends WordsLoaderHelper {
 
     // The view objects
     private EditText etWord;
-    private EditText etDescription;
     // TODO: Implement this LoaderHelper after the DialogFragment
 
     public WordsItemLoaderHelper(Context context, Uri uri) {
@@ -32,7 +31,6 @@ public class WordsItemLoaderHelper extends WordsLoaderHelper {
         );
         // Grab the view objects
         etWord = ((AppCompatActivity)getContext()).findViewById(R.id.et_word);
-        etDescription = ((AppCompatActivity)getContext()).findViewById(R.id.et_description);
     }
 
     /**
